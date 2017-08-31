@@ -3,8 +3,6 @@ const express = require('express');
 const ejs = require('ejs');
 const mime = require('mime-types');
 const path = require('path');
-const stringify = require('json-stringify-safe');
-const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -14,6 +12,7 @@ const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 const flash = require('connect-flash');
 const expressLayouts = require('express-ejs-layouts');
+const bodyParser = require('body-parser');
 
 
 // read configuration parameters
@@ -59,10 +58,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
-
-
-
-
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -137,71 +132,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-// create application/json parser
-var jsonParser = bodyParser.json()
-
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
-
-
-app.get('/', (req,res,next) => {
-  const page = {
-    field11: 'foo',
-    field12: 'bar'
-  }
-  res.render('index',{ page: page });
-});
-
-// app.get(/regexp/);
-// This is a desirable function signature.
-
-app.get('/page1', (req,res,next) => {
-    console.log('Hello, Mr. World');
-
-
-    var sanitized = JSON.parse(stringify(req));
-
-
-    console.log('In page1: req=[' + sanitized + ']');
-    const page = {
-      field11: 'apple',
-      field12: 'orange'
-    }
-    res.render('page1', {page: page});
-  });
-
-app.get('/page2', (req,res,next) => {
-  const page = {
-    field21: 'banana',
-    field22: 'strawberry'
-  }
-  res.render('page2', {page: page}); }
-
-);
-app.get('/page3', (req,res,next) => { res.render('page3', {page: page}); });
-
-app.post('/page1', urlencodedParser, (req,res,next) => {
-  if (!req.body) return res.sendStatus(400);
-  console.log('field11:[' + req.body.field11 + ']');
-  console.log('field12:[]' + req.body.field12 + ']');
-  page = {}
-  res.render('page2',{page: page});
-});
-
-app.post('/page2',  urlencodedParser, (req,res,next) => {
-  if (!req.body) return res.sendStatus(400);
-  console.log('field21:[' + req.body.field21 + ']');
-  console.log('field22:[]' + req.body.field22 + ']');
-  page = {}
-  res.render('page3',{page: page});
-});
-
-app.post('/page3', urlencodedParser, (req,res,next) => {
-  if (!req.body) return res.sendStatus(400);
-  console.log('field31:[' + req.body.field31 + ']');
-  console.log('field32:[]' + req.body.field32 + ']');
-  res.send('Done!');
-});
 
 
 

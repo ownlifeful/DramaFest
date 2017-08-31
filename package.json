@@ -1,0 +1,37 @@
+{
+  "name": "dramafest",
+  "version": "1.0.0",
+  "description": "A Theatre Festival registration application.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ownlifeful/DramaFest.git"
+  },
+  "author": "Ashwin Dixit <ashwin@ownlifeful.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/ownlifeful/DramaFest/issues"
+  },
+  "homepage": "https://github.com/ownlifeful/DramaFest#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "connect-ensure-login": "^0.1.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^4.0.0",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "express-ejs-layouts": "^2.3.1",
+    "express-session": "^1.15.5",
+    "json-stringify-safe": "^5.0.1",
+    "mongoose": "^4.11.9",
+    "morgan": "^1.8.2",
+    "passport": "^0.4.0",
+    "passport-auth0": "^0.6.0",
+    "serve-favicon": "^2.4.3",
+    "yamljs": "^0.3.0"
+  }
+}

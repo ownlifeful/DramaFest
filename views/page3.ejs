@@ -1,46 +1,24 @@
-<!DOCTYPE HTML>
-<HTML>
-<head>
-  <title>DramaFest</title>
+<%- contentFor('title') %>
+Registration Page 3
 
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-  <script
-    src="https://code.jquery.com/jquery-3.2.1.min.js"
-    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-    crossorigin="anonymous"></script>
-
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-</head>
-<body>
-<div class="container">
-
-  <div class="jumbotron"><H1>Welcome to DramaFest</H1></div>
-
+<%- contentFor('body') %>
 <div class="well well-large">
 <form action="/page3" method="post" id="page3">
   <DIV class="form-group">
     <label for="field31">Field 31:</label>
-    <TEXTAREA NAME="field31" class="form-control"><%= page.field31 %></TEXTAREA>
+    <TEXTAREA NAME="field31" class="form-control"><%= page.field31  %></TEXTAREA>
   </DIV>
 
   <DIV class="form-group">
     <label for="field32">Field 32:</label>
-    <TEXTAREA NAME="field32" class="form-control"><%= page.field32 %></TEXTAREA>
+    <TEXTAREA NAME="field132" class="form-control"><%= page.field32 %></TEXTAREA>
   </DIV>
 
-  <input type="submit" role="button" class="button btn-primary btn-large" value="Save" id="submit">
+  <input type="hidden" name="page3_complete" value="1" />
+
+  <input type="submit" role="button" class="button btn-primary btn-large" value="Save" id="submit" />
+
+  <input type="submit" role="button" class="button btn-primary btn-large" value="Submit" id="final_submit" />
+
 </form>
 </div>
-
-<%- include('partials/footer') %>
-
-</div>
-</body>
-
-</HTML>

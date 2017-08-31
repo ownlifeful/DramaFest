@@ -31,6 +31,8 @@ app.set('layout', 'layouts/layout');
 const routes = require('./routes/index');
 const user = require('./routes/user');
 
+app.current_user = {}
+
 // This will configure Passport to use Auth0
 const strategy = new Auth0Strategy(
   {
@@ -44,6 +46,8 @@ const strategy = new Auth0Strategy(
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
     // profile has all the information from the user
+    app.current_user = profile;
+    console.log(JSON.stringify(app.current_user,null,2));
     return done(null, profile);
   }
 );
@@ -131,8 +135,6 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
-
 
 
 module.exports = app;

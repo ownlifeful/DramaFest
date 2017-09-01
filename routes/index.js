@@ -76,54 +76,80 @@ router.get('/page1', ensureLoggedIn, (req,res,next) => {
         console.log("ERROR Found err=[" + err + "]");
         throw err;
     }
-    console.log('===stringify reg:');
-    console.log(stringify(reg));
     let page = {current_user: username, field11: reg.field11, field12: reg.field12};
-    console.log('===stringify page:');
-    console.log(stringify(page));
     res.render('page1', {page: page});
+  });
+});
+
+router.post('/page1', ensureLoggedIn, urlencodedParser, (req,res,next) => {
+  console.log('In POST /page1');
+  if (!req.body) return res.sendStatus(400);
+  let username = req.user.displayName;
+  let page = { email: username, field11: req.body.field11, field12: req.body.field12, page1_complete: true };
+  RegistrationModel.findOneAndUpdate({email: username }, { $set: page }, {new: true, upsert: true}, (err,reg) => {
+    if (err) throw err;
+    page['field21'] = reg['field21'];
+    page['field22'] = reg['field22'];
+    console.log("PAGE=" + stringify(page));
+    res.render('page2',{page: page});
   });
 });
 
 router.get('/page2', ensureLoggedIn, (req,res,next) => {
   console.log("In GET /page2:");
   let username = req.user.displayName;
-  RegistrationModel.findOne({email: username }, (err,page) => {
-    page.current_user = username;
+  console.log('Email:' + username );
+  RegistrationModel.findOne({email: username }, (err,reg) => {
+    if (err) {
+        console.log("ERROR Found err=[" + err + "]");
+        throw err;
+    }
+    let page = {current_user: username, field21: reg.field21, field22: reg.field22};
     res.render('page2', {page: page});
   });
 });
 
-router.get('/page3', ensureLoggedIn, (req,res,next) => { res.render('page3', {page: page}); });
-
-router.post('/page1', ensureLoggedIn, urlencodedParser, (req,res,next) => {
+router.post('/page2', ensureLoggedIn, urlencodedParser, (req,res,next) => {
+  console.log('In POST /page2');
   if (!req.body) return res.sendStatus(400);
   let username = req.user.displayName;
-
-  page = { email: username, field11: req.body.field11, field12: req.body.field12, page1_complete: true };
-
+  let page = { email: username, field21: req.body.field21, field22: req.body.field22, page2_complete: true };
   RegistrationModel.findOneAndUpdate({email: username }, { $set: page }, {new: true, upsert: true}, (err,reg) => {
     if (err) throw err;
-    console.log("PAGE=" + JSON.stringify(page,null,2));
-    res.render('page2',{page: page});
+    page['field31'] = reg['field31'];
+    page['field32'] = reg['field32'];
+    console.log("PAGE=" + stringify(page));
+    res.render('page3', {page: page});
   });
 });
 
-router.post('/page2', ensureLoggedIn, urlencodedParser, (req,res,next) => {
-  if (!req.body) return res.sendStatus(400);
+router.get('/page3', ensureLoggedIn, (req,res,next) => {
+  console.log("In GET /page3:");
   let username = req.user.displayName;
-  console.log('field21:[' + req.body.field21 + ']');
-  console.log('field22:[' + req.body.field22 + ']');
-  page = {}
-  res.render('page3',{page: page});
+  console.log('Email:' + username );
+  RegistrationModel.findOne({email: username }, (err,reg) => {
+    if (err) {
+        console.log("ERROR Found err=[" + err + "]");
+        throw err;
+    }
+    let page = {current_user: username, field31: reg.field31, field22: reg.field32};
+    res.render('page3', {page: page});
+  });
 });
 
 router.post('/page3', ensureLoggedIn, urlencodedParser, (req,res,next) => {
+  console.log('In POST /page3');
   if (!req.body) return res.sendStatus(400);
   console.log('field31:[' + req.body.field31 + ']');
   console.log('field32:[' + req.body.field32 + ']');
-  res.send('Done!');
-});
 
+  let username = req.user.displayName;
+  let page = { email: username, field31: req.body.field31, field32: req.body.field32, page3_complete: true };
+  RegistrationModel.findOneAndUpdate({email: username }, { $set: page }, {new: true, upsert: true}, (err,reg) => {
+    if (err) throw err;
+    console.log("PAGE=" + stringify(page));
+    res.send('Done!');
+  });
+});
 
 module.exports = router;

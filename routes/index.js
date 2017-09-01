@@ -4,6 +4,8 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const stringify = require('json-stringify-safe');
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
+let RegistrationModel = require('../models/registration_model');
+
 
 const env = {
   AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
@@ -11,6 +13,8 @@ const env = {
   AUTH0_CALLBACK_URL:
     process.env.AUTH0_CALLBACK_URL || 'http://localhost:3000/callback'
 };
+
+
 
 /* GET home page. */
 router.get('/', (req,res,next) => {
@@ -43,6 +47,7 @@ router.get('/callback',
   }
 );
 
+
 router.get('/failure', function(req, res) {
   var error = req.flash("error");
   var error_description = req.flash("error_description");
@@ -54,48 +59,59 @@ router.get('/failure', function(req, res) {
 });
 
 // create application/json parser
-var jsonParser = bodyParser.json()
+let jsonParser = bodyParser.json()
 
 // create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
-
+let urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 // router.get(/regexp/);
 // This is a desirable function signature.
 
 router.get('/page1', ensureLoggedIn, (req,res,next) => {
-
-    var sanitized = JSON.parse(stringify(req));
-    console.log('In page1: req.params=[' + JSON.stringify(req.params,null,2) +']');
-    const page = {
-      current_user: req.user.displayName,
-      field11: req.user.displayName,
-      field12: req.user.displayName
+  console.log("In GET /page1:");
+  let username = req.user.displayName;
+  console.log('Email:' + username );
+  RegistrationModel.findOne({email: username }, (err,reg) => {
+    if (err) {
+        console.log("ERROR Found err=[" + err + "]");
+        throw err;
     }
+    console.log('===stringify reg:');
+    console.log(stringify(reg));
+    let page = {current_user: username, field11: reg.field11, field12: reg.field12};
+    console.log('===stringify page:');
+    console.log(stringify(page));
     res.render('page1', {page: page});
   });
+});
 
 router.get('/page2', ensureLoggedIn, (req,res,next) => {
-  const page = {
-    current_user: req.user.displayName,
-    field21: req.user.displayName,
-    field22: req.user.displayName
-  };
-  res.render('page2', {page: page}); }
+  console.log("In GET /page2:");
+  let username = req.user.displayName;
+  RegistrationModel.findOne({email: username }, (err,page) => {
+    page.current_user = username;
+    res.render('page2', {page: page});
+  });
+});
 
-);
 router.get('/page3', ensureLoggedIn, (req,res,next) => { res.render('page3', {page: page}); });
 
 router.post('/page1', ensureLoggedIn, urlencodedParser, (req,res,next) => {
   if (!req.body) return res.sendStatus(400);
-  console.log('field11:[' + req.body.field11 + ']');
-  console.log('field12:[' + req.body.field12 + ']');
-  page = {}
-  res.render('page2',{page: page});
+  let username = req.user.displayName;
+
+  page = { email: username, field11: req.body.field11, field12: req.body.field12, page1_complete: true };
+
+  RegistrationModel.findOneAndUpdate({email: username }, { $set: page }, {new: true, upsert: true}, (err,reg) => {
+    if (err) throw err;
+    console.log("PAGE=" + JSON.stringify(page,null,2));
+    res.render('page2',{page: page});
+  });
 });
 
 router.post('/page2', ensureLoggedIn, urlencodedParser, (req,res,next) => {
   if (!req.body) return res.sendStatus(400);
+  let username = req.user.displayName;
   console.log('field21:[' + req.body.field21 + ']');
   console.log('field22:[' + req.body.field22 + ']');
   page = {}

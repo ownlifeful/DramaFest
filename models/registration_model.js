@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 //Define a schema
 const Schema = mongoose.Schema;
 
-const RegistrationModelSchema = new Schema({
+let RegistrationModelSchema = new Schema({
     email            : String,
     field11          : String,
     field12          : String,
@@ -13,11 +13,20 @@ const RegistrationModelSchema = new Schema({
     field22          : String,
     field31          : String,
     field32          : String,
-    page1_complete   : Boolean,
-    page2_complete   : Boolean,
-    page3_complete   : Boolean,
+    page1_complete   : { type: Boolean, default: false },
+    page2_complete   : { type: Boolean, default: false },
+    page3_complete   : { type: Boolean, default: false },
     submission_date  : { type: Date, default: Date.now },
 });
+
+/*
+// Save the new model instance, passing a callback
+RegistrationModelSchema.save(function (err) {
+  if (err) return handleError(err);
+  // saved!
+  console.log('SAVED RegistrationModelSchema!');
+});
+*/
 
 //Export function to create "RegistrationModel" model class
 module.exports = mongoose.model('RegistrationModel', RegistrationModelSchema );

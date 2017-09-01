@@ -13,7 +13,7 @@ const Auth0Strategy = require('passport-auth0');
 const flash = require('connect-flash');
 const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser');
-
+const mongoose = require('mongoose');
 
 // read configuration parameters
 const readConfig = require('./readConfig')
@@ -32,6 +32,22 @@ const routes = require('./routes/index');
 const user = require('./routes/user');
 
 app.current_user = {}
+
+const mongoDB = process.env.MONGODB_URL;
+
+// Equivalent to the above code
+mongoose.connect(mongoDB, {
+  useMongoClient: true,
+  socketTimeoutMS: 30000,
+  keepAlive: true, // contains type discrepancy in the docs (boolean vs number)?
+  reconnectTries: 30
+});
+
+//Get the default connection
+var db = mongoose.connection;
+
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // This will configure Passport to use Auth0
 const strategy = new Auth0Strategy(

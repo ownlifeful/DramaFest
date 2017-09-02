@@ -1,6 +1,7 @@
 
 //Require Mongoose
 const mongoose = require('mongoose');
+const findOneOrCreate = require('mongoose-find-one-or-create');
 
 //Define a schema
 const Schema = mongoose.Schema;
@@ -18,6 +19,8 @@ let RegistrationModelSchema = new Schema({
     page3_complete   : { type: Boolean, default: false },
     submission_date  : { type: Date, default: Date.now },
 });
+
+RegistrationModelSchema.plugin(findOneOrCreate);
 
 /*
 // Save the new model instance, passing a callback

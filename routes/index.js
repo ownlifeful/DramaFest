@@ -71,11 +71,13 @@ router.get('/page1', ensureLoggedIn, (req,res,next) => {
   console.log("In GET /page1:");
   let username = req.user.displayName;
   console.log('Email:' + username );
-  RegistrationModel.findOne({email: username }, (err,reg) => {
+  let record = {email: username }
+  RegistrationModel.findOneAndUpdate(record, { $set: record }, {new: true, upsert: true}, (err,reg) => {
     if (err) {
         console.log("ERROR Found err=[" + err + "]");
         throw err;
     }
+    console.log(stringify(reg));
     let page = {current_user: username, field11: reg.field11, field12: reg.field12};
     res.render('page1', {page: page});
   });

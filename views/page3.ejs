@@ -17,30 +17,132 @@ Registration Page 3
   <input type="submit" role="button" class="button btn-primary btn-large" value="Save" id="submit" />
 
 
+<script>
+//###################################################################
+// Author: ricocheting.com
+// Version: v3.1
+// Date: 2017-01-03
+// Description: displays the amount of time until the "dateFuture" entered below.
+
+var CDown = function() {
+	this.state=0;// if initialized
+	this.counts=[];// array holding countdown date objects and id to print to {d:new Date(2013,11,18,18,54,36), id:"countbox1"}
+	this.interval=null;// setInterval object
+}
+
+CDown.prototype = {
+	init: function(){
+		this.state=1;
+		var self=this;
+		this.interval=window.setInterval(function(){self.tick();}, 1000);
+	},
+	add: function(date,id){
+		this.counts.push({d:date,id:id});
+		this.tick();
+		if(this.state==0) this.init();
+	},
+	expire: function(idxs){
+		for(var x in idxs) {
+			this.display(this.counts[idxs[x]], "Now!");
+			this.counts.splice(idxs[x], 1);
+		}
+	},
+	format: function(r){
+		var pre='',post='',divide=', ',
+			out="";
+		if(r.d != 0){out += pre+r.d +" "+((r.d==1)?"day":"days")+post+divide;}
+		if(r.h != 0){out += pre+r.h +" "+((r.h==1)?"hour":"hours")+post+divide;}
+		out += pre+r.m +" "+((r.m==1)?"min":"mins")+post+divide;
+		out += pre+r.s +" "+((r.s==1)?"sec":"secs")+post+divide;
+
+		return out.substr(0,out.length-divide.length);
+	},
+	math: function(work){
+		var	y=w=d=h=m=s=ms=0;
+
+		ms=(""+((work%1000)+1000)).substr(1,3);
+		work=Math.floor(work/1000);//kill the "milliseconds" so just secs
+
+		y=Math.floor(work/31536000);//years (no leapyear support)
+		w=Math.floor(work/604800);//weeks
+		d=Math.floor(work/86400);//days
+		work=work%86400;
+
+		h=Math.floor(work/3600);//hours
+		work=work%3600;
+
+		m=Math.floor(work/60);//minutes
+		work=work%60;
+
+		s=Math.floor(work);//seconds
+
+		return {y:y,w:w,d:d,h:h,m:m,s:s,ms:ms};
+	},
+	tick: function(){
+		var now=(new Date()).getTime(),
+			expired=[],cnt=0,amount=0;
+
+		if(this.counts)
+		for(var idx=0,n=this.counts.length; idx<n; ++idx){
+			cnt=this.counts[idx];
+			amount=cnt.d.getTime()-now;//calc milliseconds between dates
+
+			// if time is already past
+			if(amount<0){
+				expired.push(idx);
+			}
+			// date is still good
+			else{
+				this.display(cnt, this.format(this.math(amount)));
+			}
+		}
+
+		// deal with any expired
+		if(expired.length>0) this.expire(expired);
+
+		// if no active counts, stop updating
+		if(this.counts.length==0) window.clearTimeout(this.interval);
+
+	},
+	display: function(cnt,msg){
+		document.getElementById(cnt.id).innerHTML=msg;
+	}
+};
+
+window.onload=function(){
+	var cdown = new CDown();
+	cdown.add(new Date(2017,8,15,18,46,30), "final_submit");
+};
+</script>
+
+
 
   <script>
     function counter_label() {
         let deadline = new Date(2017,9,15,13,12,3,0);
-        let now = Date.now();
-        let interval = deadline - now;
-        let hh = parseInt( interval / 3600 ) || 0;
-        let mm = parseInt( ( interval - hh * 3600 ) / 60 ) || 0;
-        let ss = parseInt( interval - hh * 3600 - mm * 60 ) || 0;
+        let current_time = Date.now();
+        let interval = parseInt( Math.floor( (deadline - current_time ) / 1000 ) ) || 0; // seconds
+        let dd = parseInt( Math.floor(  interval / (24 * 3600) ) ) || 0;
+        let hh = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) ) / 3600) ) || 0;
+        let mm = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) ) / 60 ) ) || 0;
+        let ss = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) - ( mm * 60 ) ) ) ) || 0;
 
-        hh = (hh < 10 ? '0' + hh : hh) + " hours:";
-        mm = (mm < 10 ? '0' + mm : mm) + " minutes:";
-        ss = (ss < 10 ? '0' + ss : ss) + " seconds";
+        dd = (dd < 10 ? '0' + dd : dd) + ' days. ';
+        hh = (hh < 10 ? '0' + hh : hh) + ' hours. ';
+        mm = (mm < 10 ? '0' + mm : mm) + ' minutes. ';
+        ss = (ss < 10 ? '0' + ss : ss) + ' seconds.';
 
-        $("#final_submit").val( "Time Remaining:" + hh + mm + ss );
+        $("#final_submit").val( "Time Remaining: " + dd + hh + mm + ss );
         setTimeout(counter_label,1000);
     }
   </script>
   <script>
     $(document).ready(function() {
+//      var cdown = new CDown();
+//      cdown.add(new Date(2017,8,15,18,46,30), "final_submit");
         counter_label();
     });
-
-    </script>
+  </script>
 
 
   <input type="submit" role="button" class="button btn-primary btn-large" value="Submit" id="final_submit" />

@@ -16,6 +16,33 @@ Registration Page 3
 
   <input type="submit" role="button" class="button btn-primary btn-large" value="Save" id="submit" />
 
+
+
+  <script>
+    function counter_label() {
+        let deadline = new Date(2017,9,15,13,12,3,0);
+        let now = Date.now();
+        let interval = deadline - now;
+        let hh = parseInt( interval / 3600 ) || 0;
+        let mm = parseInt( ( interval - hh * 3600 ) / 60 ) || 0;
+        let ss = parseInt( interval - hh * 3600 - mm * 60 ) || 0;
+
+        hh = (hh < 10 ? '0' + hh : hh) + " hours:";
+        mm = (mm < 10 ? '0' + mm : mm) + " minutes:";
+        ss = (ss < 10 ? '0' + ss : ss) + " seconds";
+
+        $("#final_submit").val( "Time Remaining:" + hh + mm + ss );
+        setTimeout(counter_label,1000);
+    }
+  </script>
+  <script>
+    $(document).ready(function() {
+        counter_label();
+    });
+
+    </script>
+
+
   <input type="submit" role="button" class="button btn-primary btn-large" value="Submit" id="final_submit" />
 
 </form>

@@ -4,8 +4,21 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const stringify = require('json-stringify-safe');
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
-let RegistrationModel = require('../models/registration_model');
+const RegistrationModel = require('../models/registration_model');
 
+function get_errors(field, value) {
+  let errors = {}
+  if ( /\w/.test(value) ) {
+    console.log('Field ' + field + ' is set to:[' + value + ']');
+    errors = null;
+  } else {
+    errors[field] = [];
+    errors[field].push('Field cannot be blank.');
+    console.log('Field ' + field + ' is blank.');
+  }
+  console.log('Returning ' + stringify(errors));
+  return errors;
+}
 
 const env = {
   AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
@@ -71,7 +84,7 @@ router.get('/page1', ensureLoggedIn, (req,res,next) => {
   console.log("In GET /page1:");
   let username = req.user.displayName;
   console.log('Email:' + username );
-  let record = {email: username }
+  let record = {email: username };
   RegistrationModel.findOneAndUpdate(record, { $set: record }, {new: true, upsert: true}, (err,reg) => {
     if (err) {
         console.log("ERROR Found err=[" + err + "]");
@@ -79,7 +92,7 @@ router.get('/page1', ensureLoggedIn, (req,res,next) => {
     }
     console.log(stringify(reg));
     let page = {current_user: username, field11: reg.field11, field12: reg.field12};
-    res.render('page1', {page: page});
+    res.render('page1', {page: page, errz: {} });
   });
 });
 
@@ -87,14 +100,36 @@ router.post('/page1', ensureLoggedIn, urlencodedParser, (req,res,next) => {
   console.log('In POST /page1');
   if (!req.body) return res.sendStatus(400);
   let username = req.user.displayName;
-  let page = { email: username, field11: req.body.field11, field12: req.body.field12, page1_complete: true };
-  RegistrationModel.findOneAndUpdate({email: username }, { $set: page }, {new: true, upsert: true}, (err,reg) => {
-    if (err) throw err;
-    page['field21'] = reg['field21'];
-    page['field22'] = reg['field22'];
-    console.log("PAGE=" + stringify(page));
-    res.render('page2',{page: page});
-  });
+  let page = { email: username, field11: req.body.field11, field12: req.body.field12 };
+  let errz = ['field11', 'field12'].map((field) => get_errors(field, req.body[field])).filter((x) => {
+      return ( x !== null );
+    } );
+  if ( errz ) {
+
+    console.log('ERRORZ1:' + stringify(errz));
+
+    let xxx = {};
+    errz.forEach((e)=>{
+      console.log('e=' + stringify(e));
+      xxx = Object.assign(xxx,e);
+      console.log('xxx=' + stringify(xxx));
+    });
+    errz = xxx;
+
+    console.log('ERRORZ2:' + stringify(errz));
+    let result = { page: page, errz: errz }
+    console.log(stringify(result));
+    res.render('page1', result);
+  } else {
+    page.page1_complete = true;
+    RegistrationModel.findOneAndUpdate({email: username }, { $set: page }, {new: true, upsert: true}, (err,reg) => {
+      if (err) throw err;
+      page['field21'] = reg['field21'];
+      page['field22'] = reg['field22'];
+      console.log("PAGE=" + stringify(page));
+      res.render('page2',{page: page});
+    });
+  }
 });
 
 router.get('/page2', ensureLoggedIn, (req,res,next) => {

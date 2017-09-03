@@ -11,13 +11,19 @@ Registration Page 1
 <div class="well well-large">
 <form action="/page1" method="post" id="page1">
   <DIV class="form-group">
-    <label for="field1">Field 1:</label>
+    <label for="field11">Field 1:</label>
     <TEXTAREA NAME="field11" class="form-control"><%= page.field11  %></TEXTAREA>
+    <% if ( (errz !== undefined)  && (errz.field11 !== undefined ) ) { %>
+      <div class="error"><%= errz.field11 %></div>
+    <% } %>
   </DIV>
 
   <DIV class="form-group">
     <label for="field2">Field 2:</label>
     <TEXTAREA NAME="field12" class="form-control"><%= page.field12 %></TEXTAREA>
+    <% if ( (errz !== undefined ) && (errz.field12 !== undefined ) ) { %>
+      <div class="error"><%= errz.field12 %></div>
+    <% } %>
   </DIV>
 
   <input type="submit" role="button" class="button btn-primary btn-large" value="Save" id="submit" />

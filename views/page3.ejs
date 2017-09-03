@@ -2,47 +2,71 @@
 Registration Page 3
 
 <%- contentFor('body') %>
-<div class="well well-large">
-<form action="/page3" method="post" id="page3">
-  <DIV class="form-group">
-    <label for="field31">Field 31:</label>
-    <TEXTAREA NAME="field31" class="form-control"><%= page.field31  %></TEXTAREA>
-  </DIV>
-
-  <DIV class="form-group">
-    <label for="field32">Field 32:</label>
-    <TEXTAREA NAME="field32" class="form-control"><%= page.field32 %></TEXTAREA>
-  </DIV>
-
-  <input type="submit" role="button" class="button btn-primary btn-large" value="Save" id="submit" />
-
-  <script>
-    function counter_label() {
-        let deadline = new Date(2017,9,15,13,12,3,0);
-        let current_time = Date.now();
-        let interval = parseInt( Math.floor( (deadline - current_time ) / 1000 ) ) || 0; // seconds
-        let dd = parseInt( Math.floor(  interval / (24 * 3600) ) ) || 0;
-        let hh = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) ) / 3600) ) || 0;
-        let mm = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) ) / 60 ) ) || 0;
-        let ss = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) - ( mm * 60 ) ) ) ) || 0;
-
-        dd = (dd < 10 ? '0' + dd : dd) + ' days. ';
-        hh = (hh < 10 ? '0' + hh : hh) + ' hours. ';
-        mm = (mm < 10 ? '0' + mm : mm) + ' minutes. ';
-        ss = (ss < 10 ? '0' + ss : ss) + ' seconds.';
-
-        $("#final_submit").val( "Time Remaining: " + dd + hh + mm + ss );
-        setTimeout(counter_label,1000);
-    }
-  </script>
-  <script>
-    $(document).ready(function() {
-        counter_label();
-    });
-  </script>
-
-
-  <input type="submit" role="button" class="button btn-primary btn-large" value="Submit" id="final_submit" />
-
-</form>
+<div class="jumbotron">
+  <H1>Register for DramaFest, page 3</H1>
+  Howdy <%= page.current_user %>
 </div>
+
+<div class="well well-large">
+  <form action="/page3" method="post" id="page3">
+    <DIV class="form-group">
+      <label for="field31">Field 31:</label>
+      <TEXTAREA NAME="field31" class="form-control"><%= page.field31  %></TEXTAREA>
+      <% if ( (errz !== undefined)  && (errz.field31 !== undefined ) ) { %>
+        <div class="error"><%= errz.field31 %></div>
+        <% } %>
+
+      </DIV>
+
+      <DIV class="form-group">
+        <label for="field32">Field 32:</label>
+        <TEXTAREA NAME="field32" class="form-control"><%= page.field32 %></TEXTAREA>
+        <% if ( (errz !== undefined)  && (errz.field32 !== undefined ) ) { %>
+          <div class="error"><%= errz.field32 %></div>
+          <% } %>
+
+        </DIV>
+
+        <input type="submit" role="button" class="button btn-primary btn-large" value="Save" id="submit" />
+
+        <script>
+
+        function counter_label() {
+          let deadline = new Date('<%= process.env.SUBMISSION_DEADLINE %>');
+          let current_time = Date.now();
+          let interval = parseInt( Math.floor( (deadline - current_time ) / 1000 ) ) || 0; // seconds
+          if ( interval > 0 ) {
+            let dd = parseInt( Math.floor(  interval / (24 * 3600) ) ) || 0;
+            let hh = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) ) / 3600) ) || 0;
+            let mm = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) ) / 60 ) ) || 0;
+            let ss = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) - ( mm * 60 ) ) ) ) || 0;
+
+
+            if ( dd < 10 )  { dd = '0' + dd; }
+            dd += (dd === '01') ? ' day. ' : ' days. ';
+
+            if ( hh < 10 )  { hh = '0' + hh; }
+            hh += (hh === '01') ? ' hour. ' : ' hours. ';
+
+            if ( ss < 10 )  { ss = '0' + ss; }
+            ss += (ss === '01') ? ' second. ' : ' seconds. ';
+
+            $("#final_submit").val( "Time Remaining: " + dd + hh + mm + ss );
+            setTimeout(counter_label,1000);
+          } else {
+            // The time has come!
+            $("#final_submit").val('Proceed!');
+          }
+        }
+        </script>
+        <script>
+        $(document).ready(function() {
+          counter_label();
+        });
+        </script>
+
+
+        <input type="submit" role="button" class="button btn-primary btn-large" value="Submit" id="final_submit" />
+
+      </form>
+    </div>

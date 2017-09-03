@@ -3,16 +3,27 @@
 Registration Page 2
 
 <%- contentFor('body') %>
+<div class="jumbotron">
+  <H1>Register for DramaFest, page 2</H1>
+  Hi <%= page.current_user %>
+</div>
+
 <div class="well well-large">
 <form action="/page2" method="post" id="page2">
   <DIV class="form-group">
     <label for="field21">Field 21:</label>
     <TEXTAREA NAME="field21" class="form-control"><%= page.field21  %></TEXTAREA>
+    <% if ( (errz !== undefined)  && (errz.field21 !== undefined ) ) { %>
+      <div class="error"><%= errz.field21 %></div>
+    <% } %>
   </DIV>
 
   <DIV class="form-group">
     <label for="field22">Field 22:</label>
     <TEXTAREA NAME="field22" class="form-control"><%= page.field22 %></TEXTAREA>
+    <% if ( (errz !== undefined)  && (errz.field22 !== undefined ) ) { %>
+      <div class="error"><%= errz.field22 %></div>
+    <% } %>
   </DIV>
 
   <input type="submit" role="button" class="button btn-primary btn-large" value="Save" id="submit" />

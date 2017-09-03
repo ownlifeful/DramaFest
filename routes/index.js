@@ -26,6 +26,12 @@ router.post('/', (req,res,next) => {
   res.render('index');
 });
 
+router.get('/about', (req,res,next) => {
+  console.log('About DramaFest was requested.');
+  res.render('about');
+});
+
+
 router.get('/login', passport.authenticate('auth0', {
   clientID: env.AUTH0_CLIENT_ID,
   domain: env.AUTH0_DOMAIN,

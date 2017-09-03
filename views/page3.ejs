@@ -1,6 +1,11 @@
 <%- contentFor('title') %>
 Registration Page 3
 
+<%- contentFor('go_left') %>
+<a href="/page2"><i class="glyphicon glyphicon-arrow-left"></i></a>
+
+<%- contentFor('go_right') %>
+
 <%- contentFor('body') %>
 <div class="jumbotron">
   <H1>Register for DramaFest, page 3</H1>
@@ -31,6 +36,14 @@ Registration Page 3
 
         <script>
 
+        function time_format(t,unit) {
+          let result = ( t < 10 )  ? '0' + t : t;
+          result += ' ' + unit;
+          result += ( t == 1 ) ? '' : 's';
+          result += '. ';
+          return result;
+        }
+
         function counter_label() {
           let deadline = new Date('<%= process.env.SUBMISSION_DEADLINE %>');
           let current_time = Date.now();
@@ -42,14 +55,10 @@ Registration Page 3
             let ss = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) - ( mm * 60 ) ) ) ) || 0;
 
 
-            if ( dd < 10 )  { dd = '0' + dd; }
-            dd += (dd === '01') ? ' day. ' : ' days. ';
-
-            if ( hh < 10 )  { hh = '0' + hh; }
-            hh += (hh === '01') ? ' hour. ' : ' hours. ';
-
-            if ( ss < 10 )  { ss = '0' + ss; }
-            ss += (ss === '01') ? ' second. ' : ' seconds. ';
+            dd = time_format( dd, 'day' );;
+            hh = time_format( hh, 'hour' );;
+            mm = time_format( mm, 'minute' );;
+            ss = time_format( ss, 'second' );;
 
             $("#final_submit").val( "Time Remaining: " + dd + hh + mm + ss );
             setTimeout(counter_label,1000);

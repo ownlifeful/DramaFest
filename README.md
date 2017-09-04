@@ -18,9 +18,10 @@ Theatre Festival Registration Application
         npm install
 
 
-4. Edit the `.env` file and specify required parameters.
+4. Edit the `.env` file and specify the following required parameters.
 
         SUBMISSION_DEADLINE=Sep 15 2017
+        AUTH0_CALLBACK_URL=http://ownlifeful.com:3000/callback
 
 
 5. Launch the application.

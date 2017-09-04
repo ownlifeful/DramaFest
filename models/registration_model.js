@@ -8,8 +8,10 @@ const Schema = mongoose.Schema;
 
 let RegistrationModelSchema = new Schema({
     email            : String,
-    field11          : String,
-    field12          : String,
+    field11          : String, // prodname
+    field12          : String, // playwrights
+    field13          : String, // summary
+    field14          : String, // duration
     field21          : String,
     field22          : String,
     field31          : String,

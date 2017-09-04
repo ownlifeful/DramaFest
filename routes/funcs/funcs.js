@@ -5,7 +5,7 @@ const RegistrationModel = require('../../models/registration_model');
 // functions related to routes
 
 let fields = [
-  ['field11','field12'], // 0
+  ['field11','field12','field13','field14'], // 0
   ['field21','field22'], // 1
   ['field31','field32'], // 2
 ];

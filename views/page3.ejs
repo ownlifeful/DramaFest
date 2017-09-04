@@ -7,10 +7,16 @@ Registration Page 3
 <%- contentFor('go_right') %>
 
 <%- contentFor('body') %>
+
 <div class="jumbotron">
-  <H1>Register for DramaFest, page 3</H1>
-  Howdy <%= page.current_user %>
+<div id="header_text">
+<img id="header_logo" src="/assets/images/D_small_transparent.png" alt="D logo" height="64" width="64" />ramaFest Registration
 </div>
+</div>
+
+<h2>3 / 3</h2>
+
+You are logged in as <b><%= page.current_user %></b>
 
 <div class="well well-large">
   <form action="/page3" method="post" id="page3">

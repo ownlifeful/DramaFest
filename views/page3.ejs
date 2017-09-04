@@ -43,6 +43,9 @@ You are logged in as <b><%= page.current_user %></b>
         <script>
 
         function time_format(t,unit) {
+          if (t === 0) {
+            return '';
+          }
           let result = ( t < 10 )  ? '0' + t : t;
           result += ' ' + unit;
           result += ( t == 1 ) ? '' : 's';
@@ -50,23 +53,40 @@ You are logged in as <b><%= page.current_user %></b>
           return result;
         }
 
-        function counter_label() {
+        function get_interval() {
           let deadline = new Date('<%= process.env.SUBMISSION_DEADLINE %>');
           let current_time = Date.now();
           let interval = parseInt( Math.floor( (deadline - current_time ) / 1000 ) ) || 0; // seconds
+          return interval;
+        }
+
+        function check_final_submit(event) {
+          let interval = get_interval();
           if ( interval > 0 ) {
-            let dd = parseInt( Math.floor(  interval / (24 * 3600) ) ) || 0;
-            let hh = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) ) / 3600) ) || 0;
-            let mm = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) ) / 60 ) ) || 0;
-            let ss = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) - ( mm * 60 ) ) ) ) || 0;
+            let label = get_counter_label(interval);
+            alert('Wait for: ' + label );
+            event.preventDefault();
+          }
+        }
 
+        function get_counter_label(interval) {
+          let dd = parseInt( Math.floor(  interval / (24 * 3600) ) ) || 0;
+          let hh = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) ) / 3600) ) || 0;
+          let mm = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) ) / 60 ) ) || 0;
+          let ss = parseInt( Math.floor(( interval - ( dd * 24 * 3600 ) - ( hh * 3600 ) - ( mm * 60 ) ) ) ) || 0;
+          dd = time_format( dd, 'day' );
+          hh = time_format( hh, 'hour' );
+          mm = time_format( mm, 'minute' );
+          ss = time_format( ss, 'second' );
+          let label = dd + hh + mm + ss;
+          return label;
+        }
 
-            dd = time_format( dd, 'day' );;
-            hh = time_format( hh, 'hour' );;
-            mm = time_format( mm, 'minute' );;
-            ss = time_format( ss, 'second' );;
-
-            $("#final_submit").val( "Time Remaining: " + dd + hh + mm + ss );
+        function counter_label() {
+          let interval = get_interval();
+          if ( interval > 0 ) {
+            let label = get_counter_label(interval);
+            $("#final_submit").val( "Time Remaining: " + label );
             setTimeout(counter_label,1000);
           } else {
             // The time has come!
@@ -76,6 +96,7 @@ You are logged in as <b><%= page.current_user %></b>
         </script>
         <script>
         $(document).ready(function() {
+          $('#final_submit').on('click', check_final_submit );
           counter_label();
         });
         </script>

@@ -1,3 +1,5 @@
+'use strict';
+
 const stringify = require('json-stringify-safe');
 
 const RegistrationModel = require('../../models/registration_model');

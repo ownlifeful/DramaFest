@@ -55,7 +55,8 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+#### I understand that this is only a demo.
+#### .env
 
 # junk drawer
 

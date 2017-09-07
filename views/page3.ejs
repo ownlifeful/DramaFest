@@ -46,9 +46,14 @@ You are logged in as <b><%= page.current_user %></b>
           if (t === 0) {
             return '';
           }
-          let result = ''; // ( t < 10 )  ? '0' + t : t;
-          result += ' ' + unit;
-          result += ( t == 1 ) ? '' : 's';
+          let result = t;
+          if ( t < 10 )  {
+            result = '0' + t;
+          }
+          result = result + ' ' + unit;
+          if ( t !== 1 ) {
+              result = result + 's';
+          }
           result += '. ';
           return result;
         }

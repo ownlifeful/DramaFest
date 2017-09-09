@@ -30,4 +30,4 @@ Theatre Festival Registration Application
 
 6. Point your browser to http://localhost:3000/ or the appropriate URL for your server. Enjoy!
 
-![Ashwin Dixit](/public/assets/images/Ashwin_Dixit.png)
+![Ashwin Dixit](/public/assets/images/Ashwin_Dixit_small_transparent.png)

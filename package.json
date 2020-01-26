@@ -28,7 +28,7 @@
     "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.17.0",
     "json-stringify-safe": "^5.0.1",
-    "mongoose": "^4.13.20",
+    "mongoose": "^5.7.5",
     "mongoose-find-one-or-create": "^0.2.0",
     "morgan": "^1.9.1",
     "passport": "^0.4.1",
